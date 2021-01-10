@@ -1,3 +1,7 @@
+#Replace dbname, user and pass in the URL with username and password. If there is no auth then remove it so the URL looks like http://192.168.0.58:8086/write?db=telegraf .
+#VM is on = 1 
+#VM is off = 0
+
 $VMs = get-vm | select Name, State
 
 Foreach ($VM in $VMs) {
