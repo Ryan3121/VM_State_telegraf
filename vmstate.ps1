@@ -2,6 +2,8 @@
 #VM is on = 1 
 #VM is off = 0
 
+#Place this file in C:\Program Files\InfluxData\Telegraf\scripts\
+
 $VMs = get-vm | select Name, State
 
 Foreach ($VM in $VMs) {
