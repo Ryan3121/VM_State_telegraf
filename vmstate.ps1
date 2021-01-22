@@ -1,10 +1,12 @@
-#Replace dbname, user and pass in the URL with username and password. If there is no auth then remove it so the URL looks like http://192.168.0.58:8086/write?db=telegraf .
+#Replace dbname with your DB name
 #VM is on = 1 
 #VM is off = 0
 
+#Now also gets the uptime of a VM too
+
 #Place this file in C:\Program Files\InfluxData\Telegraf\scripts\
 
-$VMs = get-vm | select Name, State
+$VMs = get-vm | select Name, State, Uptime
 
 Foreach ($VM in $VMs) {
     $key = "VM_state"
@@ -16,7 +18,11 @@ Foreach ($VM in $VMs) {
                 '0'} 
     $Stateuse = "VM_state=" + $state3
     $VM_state = "VM_State"
-    $postp =  "$VM_state,$Name $Stateuse"
+    $uptime = $VM.uptime | select "totalmilliseconds" -ExpandProperty "TotalMilliseconds"
+    $uptimeuse = "VM_Uptime=" + $uptime
+    $postp =  "$VM_state,$Name $Stateuse,$uptimeuse"
+    $post = Write-Output $postp
 
-Invoke-WebRequest 'http://192.168.0.58:8086/write?db=dbname&u=user&p=pass' -method post  -body "$postp"
+
+Invoke-WebRequest 'http://192.168.0.58:8086/write?db=telegraf' -method post  -body "$postp"
 }
